@@ -4,4 +4,4 @@ You can watch YouTube videos on Mastodon's Timeline.
 
 ## Usage
 
-It can be used as UserScript(Adding URL to @match) or Bookmarklet.
+It can be used as UserScript(Set Instance's URL to @match) or Bookmarklet.
