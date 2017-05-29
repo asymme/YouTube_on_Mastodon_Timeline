@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube on Mastodon timeline
 // @namespace    https://github.com/asymme/
-// @version      0.2.0
+// @version      0.2.1
 // @description  You can watch youtube videos on Mastodon's timeline
 // @author       Asymme
 // @match        https://
@@ -31,13 +31,28 @@
             var matches = statuses[i].href.match(/https:\/\/(www|m)?\.?youtu\.?be(\.com)?\/(watch\?.*v=)?([-\w]+)/);
             if(matches) {
                 var statusContent = statuses[i].parentNode.parentNode;
+                if(alreadyEmbedded(statusContent.parentNode.childNodes)) { continue; }
+
                 var iframe = document.createElement('iframe');
-                iframe.src = 'https://www.youtube.com/embed/' + matches[4];
-                iframe.width = statusContent.clientWidth;
-                iframe.height = '' + ((parseInt(iframe.width) * 9 / 16) | 0);
+                iframe.src = 'https://www.youtube.com/embed/' + matches[4] + '?feature=oembed';
+                iframe.width = '480';
+                iframe.height = '270';
                 iframe.frameBorder = '0';
+                iframe.style.width = '100%';
+                iframe.style.height = 'auto';
                 statusContent.appendChild(iframe);
             }
         }
+    }
+
+    function alreadyEmbedded(nodes) {
+        var flag = false;
+        for(var i = 0; i < nodes.length; i++) {
+            if(nodes[i].className === 'status-card-video') {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
     }
 })();
