@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube on Mastodon timeline
 // @namespace    https://github.com/asymme/
-// @version      0.2.2
+// @version      0.2.3
 // @description  You can watch youtube videos on Mastodon's timeline
 // @author       Asymme
 // @match        https://
@@ -63,14 +63,21 @@
             div.className = 'yt-overlay';
             div.addEventListener('mousedown', removeOverlay(div), false);
 
+            var cWidth = document.documentElement.clientWidth;
+            var cHeight = document.documentElement.clientHeight;
+            var vWidth = (cWidth * 8 / 10) | 0;
+            var vHeight = (vWidth * 9 / 16) | 0;
+            var vMarginLeft = ((cWidth / 2) - (vWidth / 2)) | 0;
+            var vMarginTop = ((cHeight / 2) - (vHeight / 2)) | 0;
+
             var iframe = document.createElement('iframe');
             iframe.src = 'https://www.youtube.com/embed/' + vid + '?autoplay=1';
-            iframe.width = '480';
-            iframe.height = '270';
+            iframe.width = '' + vWidth + 'px';
+            iframe.height = '' + vHeight + 'px';
             iframe.frameBorder = '0';
             iframe.allowFullscreen = 'allowfullscreen';
-            iframe.style.marginLeft = '' + ((document.documentElement.clientWidth / 2) - 240) + 'px';
-            iframe.style.marginTop = '' + ((document.documentElement.clientHeight / 2) - 135) + 'px';
+            iframe.style.marginLeft = '' + vMarginLeft + 'px';
+            iframe.style.marginTop = '' + vMarginTop + 'px';
 
             div.appendChild(iframe);
             parent_node.appendChild(div);
