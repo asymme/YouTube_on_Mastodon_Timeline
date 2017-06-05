@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube on Mastodon timeline
 // @namespace    https://github.com/asymme/
-// @version      0.2.3
+// @version      0.2.4
 // @description  You can watch youtube videos on Mastodon's timeline
 // @author       Asymme
 // @match        https://
@@ -45,16 +45,16 @@
 
                 var img = document.createElement('img');
                 img.className = 'yt-thumbnail';
-                img.src = 'http://img.youtube.com/vi/' + matches[4] + '/hqdefault.jpg';
+                img.src = 'https://img.youtube.com/vi/' + matches[4] + '/hqdefault.jpg';
                 img.width = '480';
                 img.height = '360';
-                img.addEventListener('mousedown', createOverlay(matches[4], statusContent), false);
+                img.addEventListener('mousedown', createOverlay(matches[4]), false);
                 statusContent.appendChild(img);
             }
         }
     }
 
-    function createOverlay(vid, parent_node) {
+    function createOverlay(vid) {
         return function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -80,7 +80,7 @@
             iframe.style.marginTop = '' + vMarginTop + 'px';
 
             div.appendChild(iframe);
-            parent_node.appendChild(div);
+            document.body.appendChild(div);
         };
     }
 
