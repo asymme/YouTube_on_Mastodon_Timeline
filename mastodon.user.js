@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube on Mastodon timeline
 // @namespace    https://github.com/asymme/
-// @version      0.2.5
+// @version      0.2.6
 // @description  You can watch youtube videos on Mastodon's timeline
 // @author       Asymme
 // @match        https://
@@ -39,18 +39,18 @@
         var statuses = node.querySelectorAll('.status__content > p > a, .status__content > .status__content__text > p > a');
         for(var i = 0, len = statuses.length; i < len; i++) {
             var matches = statuses[i].href.match(/https:\/\/(www|m)?\.?youtu\.?be(\.com)?\/(watch\?.*v=)?([-\w]+)/);
-            if(matches) {
-                var statusContent = statuses[i].parentNode.parentNode;
-                if(statusContent.parentNode.querySelector('.status-card-video')) { continue; }
+            if(matches === null || matches[4] === 'channel') { continue; }
 
-                var img = document.createElement('img');
-                img.className = 'yt-thumbnail';
-                img.src = 'https://img.youtube.com/vi/' + matches[4] + '/hqdefault.jpg';
-                img.width = '480';
-                img.height = '360';
-                img.addEventListener('mousedown', createOverlay(matches[4]), false);
-                statusContent.appendChild(img);
-            }
+            var statusContent = statuses[i].parentNode.parentNode;
+            if(statusContent.parentNode.querySelector('.status-card-video')) { continue; }
+
+            var img = document.createElement('img');
+            img.className = 'yt-thumbnail';
+            img.src = 'https://img.youtube.com/vi/' + matches[4] + '/hqdefault.jpg';
+            img.width = '480';
+            img.height = '360';
+            img.addEventListener('mousedown', createOverlay(matches[4]), false);
+            statusContent.appendChild(img);
         }
     }
 
