@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube on Mastodon timeline
 // @namespace    https://github.com/asymme/
-// @version      0.2.6
+// @version      0.2.7
 // @description  You can watch youtube videos on Mastodon's timeline
 // @author       Asymme
 // @match        https://
@@ -38,23 +38,23 @@
     function addThumbnail(node) {
         var statuses = node.querySelectorAll('.status__content > p > a, .status__content > .status__content__text > p > a');
         for(var i = 0, len = statuses.length; i < len; i++) {
-            var matches = statuses[i].href.match(/https:\/\/(www|m)?\.?youtu\.?be(\.com)?\/(watch\?.*v=)?([-\w]+)/);
-            if(matches === null || matches[4] === 'channel') { continue; }
+            var matches = statuses[i].href.match(/https:\/\/(www|m)?\.?youtu\.?be(\/|\.com\/watch\?v=)?([-\w]+)(.*list=([-\w]+))?/);
+            if(matches === null) { continue; }
 
             var statusContent = statuses[i].parentNode.parentNode;
             if(statusContent.parentNode.querySelector('.status-card-video')) { continue; }
 
             var img = document.createElement('img');
             img.className = 'yt-thumbnail';
-            img.src = 'https://img.youtube.com/vi/' + matches[4] + '/hqdefault.jpg';
+            img.src = 'https://img.youtube.com/vi/' + matches[3] + '/hqdefault.jpg';
             img.width = '480';
             img.height = '360';
-            img.addEventListener('mousedown', createOverlay(matches[4]), false);
+            img.addEventListener('mousedown', createOverlay(matches[3], matches[5]), false);
             statusContent.appendChild(img);
         }
     }
 
-    function createOverlay(vid) {
+    function createOverlay(vid, lid) {
         return function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -70,8 +70,9 @@
             var vMarginLeft = ((cWidth / 2) - (vWidth / 2)) | 0;
             var vMarginTop = ((cHeight / 2) - (vHeight / 2)) | 0;
 
+            var q = (typeof lid !== 'undefined') ? 'list=' + lid + '&' : '';
             var iframe = document.createElement('iframe');
-            iframe.src = 'https://www.youtube.com/embed/' + vid + '?autoplay=1';
+            iframe.src = 'https://www.youtube.com/embed/' + vid + '?' + q + 'autoplay=1';
             iframe.width = '' + vWidth + 'px';
             iframe.height = '' + vHeight + 'px';
             iframe.frameBorder = '0';
